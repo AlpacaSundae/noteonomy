@@ -1,0 +1,5 @@
+make get_note_contents handle IsADirectory errors by returning the note list of the specified directory
+
+make api info page redirect to the api info page url as well as display the get_note_contents
+
+ensure the path used for filenames is only a-z A-Z 0-9 and /
