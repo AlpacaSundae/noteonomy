@@ -8,10 +8,10 @@ use tower_http::services::{ServeDir, ServeFile};
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-    .route("/api/note/*name", get(get_note_contents).put(set_note_contents).delete(delete_note))
-    .route("/api/note", get(get_note_list))
-    .nest_service("/api", ServeFile::new("static/api.html"))
-    .nest_service("/", ServeDir::new("static").not_found_service(ServeFile::new("static/404.html")));
+        .route("/api/note/*name", get(get_note_contents).put(set_note_contents).delete(delete_note))
+        .route("/api/note", get(get_note_list))
+        .nest_service("/api", ServeFile::new("static/api.html"))
+        .nest_service("/", ServeDir::new("static").not_found_service(ServeFile::new("static/404.html")));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
@@ -91,12 +91,14 @@ fn error_page() -> String {
 // Ensure a path has no funky characters in it before trying to access a file
 // for now, we only accept alphanumeric paths 
 fn _clean_path(name : &String) -> bool {
+    let mut empty = true;
+
     for c in name.chars() {
         match c {
-            'a'..='z' => (),
-            'A'..='Z' => (),
-            '0'..='9' => (),
-            '/'       => (),
+            'a'..='z' => empty = false,
+            'A'..='Z' => empty = false,
+            '0'..='9' => empty = false,
+            '/'       => if empty {return false} else {empty = true},
             _         => return false
         }
     }
@@ -113,6 +115,7 @@ mod tests {
     fn test_clean_path() {
         assert!(  _clean_path(&String::from("this/is/67/aGOODpath")));
         assert!(! _clean_path(&String::from("this/IS/67/a<>badpath")));
+        assert!(! _clean_path(&String::from("this//grey")));
 
         assert!(  _clean_path(&String::from("")));
         assert!(! _clean_path(&String::from(" ")));
@@ -122,7 +125,7 @@ mod tests {
     async fn note_storage() {
         let filename = String::from("test");
         let contents = String::from("gaben was\nhere\n8892");
- 
+
         assert!(_set_note_contents(filename.clone(), contents.clone()).unwrap());
         assert_eq!(get_note_contents(axum::extract::Path(filename.clone())).await, contents);
         _delete_note(filename.clone()).unwrap();
