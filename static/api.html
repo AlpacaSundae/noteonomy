@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <head>
-
+    <script>
+        if (window.location.pathname != "/api") {
+            window.location.replace("/api");
+        }
+    </script>
 </head>
 <body>
-    to use the api take control press the api
+    <p>GET /api --> this helpful page :)</p>
+
+    <p>GET /api/note --> retrieves a list of the notes stored on the system</p>
+
+    <p>GET /api/note/[note name] --> returns note contents (if exists)</p>
+    <p>POST /api/note/[note name] with text contents --> creates/overwrites a note with the contents</p>
+    <p>DELETE /api/note/[note name] --> take a lucky guess</p>
 </body>
 </html>

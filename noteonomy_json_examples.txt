@@ -1,0 +1,66 @@
+[
+	{
+		id: 467382,
+		heading: "Test Note",
+		type: "text",
+		category: "Example",
+		content: "this is the content of the note. Many words could be placed in here, up to the UI how to show it all and either allow expanding or scrolling idk idc",
+		link_ids: [432167, 753853, 321894, 674328]
+	},
+	{
+		id: 432167,
+		heading: "Test Note #2",
+		type: "text",
+		category: "Example",
+		content: "this is an example of a two way link. link of id 467382 links here, and we linkback to it!",
+		link_ids: [467382]
+	},
+	{
+		id: 753853,
+		heading: "Test Table",
+		type: "table",
+		category: "Example",
+		content: [//idk how we will do this, but need heading of ros/cols content of each entry, and maybe a comment below the table]
+		link_ids: [837584]
+	},
+	{
+		id: 321894,
+		heading: "Test Note #3,
+		type: "text",
+		category: "Example",
+		content: "back to text, this note however is only a one way link, 467382 points here but we dont actually link back to anything else"
+		link_ids: []
+	},
+	{
+		id: 758693,
+		heading: "Test Note #4",
+		type: "text",
+		category: "Example",
+		content: "we are just independent, we don't link to anyone",
+		link_ids: []
+	},
+	{
+		id: 674328,
+		heading: "Test Note #5",
+		type: "text",
+		category: "Example",
+		content: "so we chain link along to another entry",
+		link_ids: [912323]
+	},
+	{
+		id: 837584,
+		heading: "Test Image",
+		type: "image",
+		category: "Example",
+		content: [//image somehow ?? data or link ?? could implement some /api/image ??, "text to go around image"]
+		link_ids: []
+	},
+	{
+		id: 912323,
+		heading: "Test Note #6,
+		type: "text",
+		category: "Example",
+		content: "id we can doubly link tot image idc anymore",
+		link_ids: [837584]
+	},
+]

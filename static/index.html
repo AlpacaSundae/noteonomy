@@ -1,8 +1,90 @@
 <!DOCTYPE html>
 <head>
-
+    <script>
+        if (window.location.pathname != "/") {
+            window.location.replace("/");
+        }
+    </script>
 </head>
 <body>
     <h1>grey lord index</h1>
 </body>
+<script>
+    {
+        document.body.appendChild(createNote("tester/a"));
+        document.body.appendChild(createNote("tester/b"));
+        document.body.appendChild(createNote("tester/c"));
+        document.body.appendChild(createNote("tester/d"));
+    }
+
+    function createNote(id) {
+        note = document.createElement("div");
+        note.classList.add("note");
+        note.id = id;
+
+        heading = document.createElement("h1");
+        heading.innerText = `note: ${id}`
+
+        content = document.createElement("p");
+        content.classList.add("note-content");
+        content.contentEditable = true;
+
+        reloadButton = document.createElement("div");
+        updateButton = document.createElement("div");
+        deleteButton = document.createElement("div");
+
+        reloadButton.innerText = "reload";
+        updateButton.innerText = "update";
+        deleteButton.innerText = "delete";
+
+        reloadButton.setAttribute("onclick", `noteGetById("${id}")`);
+        updateButton.setAttribute("onclick", `notePostById("${id}")`);
+        deleteButton.setAttribute("onclick", `noteDeleteById("${id}")`);
+
+        note.appendChild(heading);
+        
+        note.appendChild(reloadButton);
+        note.appendChild(updateButton);
+        note.appendChild(deleteButton);
+
+        note.appendChild(content);
+
+        noteGet(note);
+        return note;
+    }
+
+    function noteGetById(id) {
+        noteGet(document.getElementById(id));
+    }
+
+    function noteGet(note) {
+        const http = new XMLHttpRequest();
+        http.open("GET", `http://127.0.0.0:3000/api/note/${note.id}`);
+        http.send();
+        http.onload = () => {
+            note.querySelector(".note-content").innerText = http.responseText;
+        };
+    }
+
+    function notePostById(id) {
+        notePost(document.getElementById(id));
+    }
+
+    function notePost(note) {
+        const http = new XMLHttpRequest();
+        http.open("PUT", `http://127.0.0.0:3000/api/note/${note.id}`);
+        http.send(note.querySelector(".note-content").innerText);
+    }
+
+    function noteDeleteById(id) {
+        noteDelete(document.getElementById(id));
+    }
+
+    function noteDelete(note) {
+        const http = new XMLHttpRequest();
+        http.open("DELETE", `http://127.0.0.0:3000/api/note/${note.id}`);
+        http.send();
+        note.remove();
+    }
+</script>
 </html>
