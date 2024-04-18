@@ -25,32 +25,49 @@
         heading = document.createElement("h1");
         heading.innerText = `note: ${id}`
 
-        content = document.createElement("p");
+        content = document.createElement("div");
         content.classList.add("note-content");
         content.contentEditable = true;
 
         reloadButton = document.createElement("div");
         updateButton = document.createElement("div");
         deleteButton = document.createElement("div");
+        rawToggleButton = document.createElement("div");
 
         reloadButton.innerText = "reload";
         updateButton.innerText = "update";
         deleteButton.innerText = "delete";
+        rawToggleButton.innerText = "toggle raw view";
 
         reloadButton.setAttribute("onclick", `noteGetById("${id}")`);
         updateButton.setAttribute("onclick", `notePostById("${id}")`);
         deleteButton.setAttribute("onclick", `noteDeleteById("${id}")`);
+        rawToggleButton.setAttribute("onclick", `noteRawToggleById("${id}")`);
 
         note.appendChild(heading);
         
         note.appendChild(reloadButton);
         note.appendChild(updateButton);
         note.appendChild(deleteButton);
+        note.appendChild(rawToggleButton);
 
         note.appendChild(content);
 
         noteGet(note);
         return note;
+    }
+
+    function noteRawToggleById(id) {
+        let content = document.getElementById(id).querySelector(".note-content");
+        if (content.classList.contains("content-html")) {
+            content.innerText = content.innerHTML;
+            content.classList.add("content-raw");
+            content.classList.remove("content-html");
+        } else {
+            content.innerHTML = content.innerText;
+            content.classList.remove("content-raw");
+            content.classList.add("content-html");
+        }
     }
 
     function noteGetById(id) {
@@ -62,7 +79,11 @@
         http.open("GET", `http://127.0.0.0:3000/api/note/${note.id}`);
         http.send();
         http.onload = () => {
-            note.querySelector(".note-content").innerText = http.responseText;
+            let content = note.querySelector(".note-content");
+            content.innerHTML = http.responseText;
+            content.classList.remove("content-raw");
+            content.classList.add("content-html");
+
         };
     }
 
@@ -72,8 +93,10 @@
 
     function notePost(note) {
         const http = new XMLHttpRequest();
+        const content = note.querySelector(".note-content")
+        const data = content.classList.contains("content-html") ? content.innerHTML : content.innerText;
         http.open("PUT", `http://127.0.0.0:3000/api/note/${note.id}`);
-        http.send(note.querySelector(".note-content").innerText);
+        http.send(data);
     }
 
     function noteDeleteById(id) {
